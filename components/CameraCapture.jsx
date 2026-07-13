@@ -6,6 +6,7 @@ import Wordmark from './Wordmark';
 import { composeStickerBlob, formatClock } from '@/lib/sticker';
 import { resolveCurrentAct } from '@/lib/currentAct';
 import { savePhoto } from '@/lib/photos';
+import { getOwnerId } from '@/lib/ownerId';
 
 export default function CameraCapture() {
   const router = useRouter();
@@ -83,9 +84,12 @@ export default function CameraCapture() {
         actTitle: preview.act?.title || null,
         actTime: preview.actTime,
         coords: preview.coords,
+        ownerId: getOwnerId(),
       });
       URL.revokeObjectURL(preview.url);
       router.push('/galeria');
+    } catch (e) {
+      setError(e?.message || 'No hem pogut pujar la foto.');
     } finally {
       setSaving(false);
     }
