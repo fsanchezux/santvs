@@ -4,13 +4,27 @@ import { supabaseAdmin } from '@/lib/supabase';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+function requireAdmin(req) {
+  const token = req.headers.get('x-admin-token');
+  const expected = process.env.ADMIN_TOKEN;
+  return !!(token && expected && token === expected);
+}
+
+export async function GET(req) {
+  const url = new URL(req.url);
+  const scope = url.searchParams.get('scope');
+  const isAdmin = scope === 'admin' && requireAdmin(req);
+
   const supa = supabaseAdmin();
-  const { data, error } = await supa
+  let q = supa
     .from('photos')
-    .select('id, owner_id, act_id, act_title, act_time, coords_lat, coords_lng, public_url, created_at')
+    .select('id, owner_id, act_id, act_title, act_time, coords_lat, coords_lng, public_url, created_at, report_count, hidden')
     .order('created_at', { ascending: false })
     .limit(500);
+  if (!isAdmin) {
+    q = q.eq('hidden', false);
+  }
+  const { data, error } = await q;
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -67,7 +81,6 @@ export async function POST(req) {
     .select()
     .single();
   if (insertErr) {
-    // roll back the upload so we don't leak orphan blobs
     await supa.storage.from('photos').remove([path]);
     return NextResponse.json({ error: insertErr.message }, { status: 500 });
   }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { listPhotos, deletePhoto } from '@/lib/photos';
+import { listPhotos, deletePhoto, reportPhoto } from '@/lib/photos';
 import { getOwnerId } from '@/lib/ownerId';
 
 function filenameFor(photo) {
@@ -48,11 +48,29 @@ export default function Gallery() {
 
   const handleDelete = async id => {
     try {
-      await deletePhoto(id, ownerId);
+      await deletePhoto(id, { ownerId });
       setPhotos(list => list.filter(p => p.id !== id));
       setOpen(null);
     } catch (e) {
       alert(e.message || 'No hem pogut esborrar la foto.');
+    }
+  };
+
+  const handleReport = async photo => {
+    if (!confirm('Reportar aquesta foto? Si diverses persones la reporten, s’amagarà automàticament.')) return;
+    try {
+      const res = await reportPhoto(photo.id, ownerId);
+      if (res.hidden) {
+        setPhotos(list => list.filter(p => p.id !== photo.id));
+        setOpen(null);
+        alert('Gràcies. La foto ha estat amagada.');
+      } else if (res.already_reported) {
+        alert('Ja havies reportat aquesta foto.');
+      } else {
+        alert('Gràcies pel report.');
+      }
+    } catch (e) {
+      alert(e.message || 'No hem pogut enviar el report.');
     }
   };
 
@@ -158,7 +176,14 @@ export default function Gallery() {
                 🗑
               </button>
             ) : (
-              <span className="h-10 w-10" />
+              <button
+                onClick={() => handleReport(open)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-yellow-400"
+                aria-label="Reportar"
+                title="Reportar"
+              >
+                🚩
+              </button>
             )}
           </div>
 

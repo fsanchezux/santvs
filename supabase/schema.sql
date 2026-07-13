@@ -1,5 +1,6 @@
--- Run once in Supabase SQL Editor.
+-- Run once (idempotent). Paste in Supabase SQL Editor and hit Run.
 
+-- 1. Photos table
 create table if not exists public.photos (
   id uuid primary key default gen_random_uuid(),
   owner_id text not null,
@@ -16,14 +17,35 @@ create table if not exists public.photos (
 create index if not exists photos_created_at_desc
   on public.photos (created_at desc);
 
--- Anyone can read the metadata (list gallery). Writes go through the API
--- with the service_role key, which bypasses RLS.
+-- 2. Moderation columns
+alter table public.photos
+  add column if not exists report_count integer not null default 0,
+  add column if not exists hidden boolean not null default false;
+
+create index if not exists photos_hidden_idx
+  on public.photos (hidden);
+
+-- 3. Per-device report log (one row per (photo, reporter))
+create table if not exists public.photo_reports (
+  photo_id uuid not null references public.photos(id) on delete cascade,
+  reporter_id text not null,
+  created_at timestamptz not null default now(),
+  primary key (photo_id, reporter_id)
+);
+
+create index if not exists photo_reports_photo_idx
+  on public.photo_reports (photo_id);
+
+-- 4. RLS: metadata readable by anyone (writes go through the API with the
+-- service_role key, which bypasses RLS). Same for reports.
 alter table public.photos enable row level security;
 drop policy if exists "public read" on public.photos;
 create policy "public read" on public.photos for select using (true);
 
--- Public storage bucket for the JPEGs. Public read via URL; uploads/deletes
--- happen server-side with the service_role.
+alter table public.photo_reports enable row level security;
+-- no public policies — reports table is service-role only.
+
+-- 5. Public storage bucket for the JPEGs.
 insert into storage.buckets (id, name, public)
 values ('photos', 'photos', true)
 on conflict (id) do nothing;
