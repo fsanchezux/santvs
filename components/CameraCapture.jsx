@@ -139,7 +139,7 @@ export default function CameraCapture() {
         autoPlay
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="relative flex items-start justify-between p-4">
+      <div className="relative z-10 flex items-start justify-between p-4 pt-[calc(env(safe-area-inset-top)+1rem)]">
         <button
           onClick={() => router.push('/')}
           aria-label="Tancar"
@@ -147,7 +147,7 @@ export default function CameraCapture() {
         >
           ✕
         </button>
-        <Wordmark size="md" className="text-white drop-shadow" />
+        <Wordmark size="md" className="drop-shadow" />
         <button
           onClick={() => setFacing(f => (f === 'environment' ? 'user' : 'environment'))}
           aria-label="Canviar càmera"
@@ -157,12 +157,12 @@ export default function CameraCapture() {
         </button>
       </div>
 
-      <div className="mt-auto pb-[env(safe-area-inset-bottom)]">
+      <div className="relative z-10 mt-auto pb-[calc(env(safe-area-inset-bottom)+1rem)]">
         <div className="flex items-center justify-center py-6">
           <button
             onClick={capture}
             aria-label="Fer foto"
-            className="h-20 w-20 rounded-full bg-white ring-4 ring-white/40 active:scale-95"
+            className="h-20 w-20 rounded-full bg-[#fc4c02] ring-4 ring-white/30 shadow-lg shadow-black/50 active:scale-95"
           />
         </div>
       </div>
