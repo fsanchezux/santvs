@@ -136,13 +136,23 @@ export default function CameraCapture() {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-black">
-      <video
-        ref={videoRef}
-        playsInline
-        muted
-        autoPlay
-        className="absolute inset-0 h-full w-full object-cover"
-      />
+      <div className="absolute inset-0 flex items-center justify-center bg-black">
+        <div
+          className="relative overflow-hidden"
+          style={{
+            width: 'min(100vw, calc(100dvh * 9 / 16))',
+            aspectRatio: '9 / 16',
+          }}
+        >
+          <video
+            ref={videoRef}
+            playsInline
+            muted
+            autoPlay
+            className="h-full w-full object-cover"
+          />
+        </div>
+      </div>
       <div className="relative z-10 flex items-start justify-between p-4 pt-[calc(env(safe-area-inset-top)+1rem)]">
         <button
           onClick={() => router.push('/')}

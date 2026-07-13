@@ -132,7 +132,7 @@ export default function Gallery() {
       {open && (
         <div
           onClick={() => setOpen(null)}
-          className="fixed inset-0 z-50 flex flex-col bg-black/95 pb-[env(safe-area-inset-bottom)]"
+          className="fixed inset-0 z-[70] flex flex-col bg-black/95 pb-[env(safe-area-inset-bottom)]"
         >
           <div
             className="flex items-center justify-between p-4"
