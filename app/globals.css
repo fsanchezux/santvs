@@ -70,7 +70,7 @@ html.dark .leaflet-popup-tip {
   border: 2px solid white;
   box-shadow: 0 2px 8px rgba(0,0,0,.45);
   display: grid; place-items: center;
-  color: white; font-size: 16px;
+  color: white; font-size: 13px;
   background: #fc4c02;
   position: relative;
 }
