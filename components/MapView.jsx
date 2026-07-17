@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { CATEGORIES } from '@/lib/categories';
+import { shapeSvg } from '@/lib/pinShapes';
 import { currentTheme } from '@/lib/theme';
 
 const MATARO_CENTER = [41.5390, 2.4449];
@@ -27,14 +28,14 @@ function FocusController({ focusVenueId, groups, markerRefs }) {
   return null;
 }
 
-function makePinIcon({ color, icon, count }) {
+function makePinIcon({ color, icon, shape, count }) {
   const badge = count > 1 ? `<span class="count">${count}</span>` : '';
   return L.divIcon({
     className: '',
-    html: `<div class="santes-pin" style="background:${color}"><i class="${icon}" aria-hidden="true"></i>${badge}</div>`,
+    html: `<div class="santes-pin santes-pin--${shape}">${shapeSvg(shape, color)}<i class="${icon}" aria-hidden="true"></i>${badge}</div>`,
     iconSize: [34, 34],
     iconAnchor: [17, 17],
-    popupAnchor: [0, -14],
+    popupAnchor: [0, -15],
   });
 }
 
@@ -108,6 +109,7 @@ export default function MapView({ events, focusVenueId }) {
         const icon = makePinIcon({
           color: meta.color,
           icon: meta.icon,
+          shape: meta.shape,
           count: g.events.length,
         });
         return (
