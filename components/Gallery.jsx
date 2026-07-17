@@ -72,6 +72,12 @@ export default function Gallery() {
   }, []);
 
   useEffect(() => {
+    const open = () => setShowTutorial(true);
+    window.addEventListener('santes:open-tutorial', open);
+    return () => window.removeEventListener('santes:open-tutorial', open);
+  }, []);
+
+  useEffect(() => {
     setCanShare(
       typeof navigator !== 'undefined' &&
         typeof navigator.canShare === 'function' &&

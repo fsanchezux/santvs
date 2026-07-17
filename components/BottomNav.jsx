@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const items = [
-  { href: '/', label: 'Actes', icon: 'fa-solid fa-map-location-dot' },
+  { href: '/llista', label: 'Llista', icon: 'fa-solid fa-list-ul' },
+  { href: '/', label: 'Mapa', icon: 'fa-solid fa-map-location-dot' },
   { href: '/galeria', label: 'Galeria', icon: 'fa-regular fa-images' },
 ];
 
@@ -16,9 +17,10 @@ export default function BottomNav() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-neutral-900/10 bg-white/95 backdrop-blur pb-[env(safe-area-inset-bottom)] dark:border-white/10 dark:bg-neutral-950/95">
       <div className="mx-auto flex max-w-2xl items-end justify-around px-4">
-        <NavItem item={items[0]} active={pathname === items[0].href} />
+        <NavItem item={items[0]} active={pathname?.startsWith('/llista')} />
+        <NavItem item={items[1]} active={pathname === '/'} />
         <ShutterLink />
-        <NavItem item={items[1]} active={pathname?.startsWith(items[1].href)} />
+        <NavItem item={items[2]} active={pathname?.startsWith('/galeria')} />
       </div>
     </nav>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Wordmark from './Wordmark';
 import { events } from '@/data/events';
@@ -28,6 +28,13 @@ const DAYS = [
 export default function MapHome() {
   const [query, setQuery] = useState('');
   const [day, setDay] = useState(null);
+  const [focusVenueId, setFocusVenueId] = useState(null);
+
+  // Arriving from the acts list (/?venue=<id>): center + open that venue.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('venue');
+    if (id) setFocusVenueId(id);
+  }, []);
 
   const enriched = useMemo(
     () =>
@@ -56,7 +63,7 @@ export default function MapHome() {
   return (
     <div className="fixed inset-0">
       <div className="absolute inset-0">
-        <MapView events={filtered} />
+        <MapView events={filtered} focusVenueId={focusVenueId} />
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 z-[900] flex flex-col gap-2 p-3 pb-0">

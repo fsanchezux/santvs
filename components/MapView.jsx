@@ -1,12 +1,31 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { CATEGORIES } from '@/lib/categories';
 import { currentTheme } from '@/lib/theme';
 
 const MATARO_CENTER = [41.5390, 2.4449];
+
+// Flies to a venue and opens its popup when `focusVenueId` changes — used when
+// arriving from the acts list with `/?venue=<id>`.
+function FocusController({ focusVenueId, groups, markerRefs }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!focusVenueId) return;
+    const group = groups.find(g => g.venueId === focusVenueId);
+    if (!group) return;
+    const marker = markerRefs.current[focusVenueId];
+    // Open the popup once the fly-to settles so auto-pan positions it against
+    // the final viewport (keeps it clear of the search bar / day chips).
+    const openWhenSettled = () => marker && marker.openPopup();
+    map.once('moveend', openWhenSettled);
+    map.flyTo([group.venue.lat, group.venue.lng], 17, { duration: 0.7 });
+    return () => map.off('moveend', openWhenSettled);
+  }, [focusVenueId, groups, map, markerRefs]);
+  return null;
+}
 
 function makePinIcon({ color, icon, count }) {
   const badge = count > 1 ? `<span class="count">${count}</span>` : '';
@@ -50,8 +69,9 @@ function infoUrl(event) {
   return event.url || PROGRAMA_URL;
 }
 
-export default function MapView({ events }) {
+export default function MapView({ events, focusVenueId }) {
   const groups = useMemo(() => groupByVenue(events), [events]);
+  const markerRefs = useRef({});
   const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
@@ -80,6 +100,8 @@ export default function MapView({ events }) {
         maxZoom={19}
       />
 
+      <FocusController focusVenueId={focusVenueId} groups={groups} markerRefs={markerRefs} />
+
       {groups.map(g => {
         const cat = dominantCategory(g.events);
         const meta = CATEGORIES[cat];
@@ -89,10 +111,24 @@ export default function MapView({ events }) {
           count: g.events.length,
         });
         return (
-          <Marker key={g.venueId} position={[g.venue.lat, g.venue.lng]} icon={icon}>
-            <Popup>
-              <div className="min-w-[240px] max-w-[280px]">
-                <div className="flex items-center justify-between gap-3">
+          <Marker
+            key={g.venueId}
+            position={[g.venue.lat, g.venue.lng]}
+            icon={icon}
+            ref={m => {
+              if (m) markerRefs.current[g.venueId] = m;
+            }}
+          >
+            <Popup
+              className="santes-popup"
+              maxWidth={300}
+              maxHeight={320}
+              keepInView
+              autoPanPaddingTopLeft={[10, 128]}
+              autoPanPaddingBottomRight={[10, 96]}
+            >
+              <div className="w-[272px] max-w-[74vw]">
+                <div className="sticky top-0 z-10 flex items-center justify-between gap-3 bg-white pb-2 dark:bg-[#171717]">
                   <p className="text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                     {g.venue.name}
                   </p>

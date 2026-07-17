@@ -20,6 +20,13 @@ html.dark body {
 
 .wordmark { letter-spacing: -0.02em; }
 
+@keyframes countdown-pop {
+  0% { transform: scale(1.6); opacity: 0; }
+  30% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.7); opacity: 0; }
+}
+.countdown-pop { animation: countdown-pop 0.9s ease-out forwards; }
+
 /* The SANTVS logo art is near-white; darken it for the light (daytime) theme. */
 .wordmark-logo { filter: invert(1); }
 html.dark .wordmark-logo { filter: none; }
@@ -63,6 +70,12 @@ html.dark .leaflet-popup-tip {
 }
 .leaflet-popup-content { margin: 12px 14px; }
 .leaflet-popup-close-button { color: #737373 !important; }
+
+/* Venue popup sits above the fixed search/day-chips overlay and scrolls when
+   a venue has many acts. */
+.santes-popup.leaflet-popup { z-index: 1200 !important; }
+.santes-popup .leaflet-popup-content { margin: 12px 14px; }
+.leaflet-popup-scrolled { overflow-x: hidden; }
 
 .santes-pin {
   width: 34px; height: 34px;
