@@ -37,7 +37,7 @@ export default function Wordmark({
       alt="SANTVS"
       height={h}
       style={{ height: `${h}px`, width: 'auto' }}
-      className={className}
+      className={`wordmark-logo ${className}`}
     />
   );
 }

@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { CATEGORIES } from '@/lib/categories';
+import { currentTheme } from '@/lib/theme';
 
 const MATARO_CENTER = [41.5390, 2.4449];
 
@@ -51,6 +52,16 @@ function infoUrl(event) {
 
 export default function MapView({ events }) {
   const groups = useMemo(() => groupByVenue(events), [events]);
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    setTheme(currentTheme());
+    const onChange = e => setTheme(e.detail);
+    window.addEventListener('santes:themechange', onChange);
+    return () => window.removeEventListener('santes:themechange', onChange);
+  }, []);
+
+  const tileStyle = theme === 'light' ? 'light_all' : 'dark_all';
 
   return (
     <MapContainer
@@ -62,7 +73,8 @@ export default function MapView({ events }) {
       className="h-full w-full"
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        key={tileStyle}
+        url={`https://{s}.basemaps.cartocdn.com/${tileStyle}/{z}/{x}/{y}{r}.png`}
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
         subdomains="abcd"
         maxZoom={19}
@@ -81,34 +93,36 @@ export default function MapView({ events }) {
             <Popup>
               <div className="min-w-[240px] max-w-[280px]">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs uppercase tracking-wider text-neutral-400">
+                  <p className="text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                     {g.venue.name}
                   </p>
                   <a
                     href={mapsUrl(g.venue)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-white/20"
+                    className="shrink-0 rounded-full bg-neutral-900/10 px-2.5 py-1 text-[11px] font-medium text-neutral-900 hover:bg-neutral-900/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
                   >
-                    Com hi vaig ↗
+                    <i className="fa-solid fa-diamond-turn-right mr-1" aria-hidden="true" />
+                    Com hi vaig
                   </a>
                 </div>
-                <ul className="mt-3 flex flex-col divide-y divide-white/5">
+                <ul className="mt-3 flex flex-col divide-y divide-neutral-900/5 dark:divide-white/5">
                   {g.events.map(e => (
                     <li key={e.id} className="flex items-center justify-between gap-3 py-2">
                       <div className="min-w-0 flex-1">
                         <p className="text-[11px] uppercase tracking-wider text-neutral-500">
                           {e.time}
                         </p>
-                        <p className="text-sm font-medium text-white">{e.title}</p>
+                        <p className="text-sm font-medium text-neutral-900 dark:text-white">{e.title}</p>
                       </div>
                       <a
                         href={infoUrl(e)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-medium text-neutral-100 hover:bg-white/10"
+                        className="shrink-0 rounded-full border border-neutral-900/15 px-2.5 py-1 text-[11px] font-medium text-neutral-700 hover:bg-neutral-900/10 dark:border-white/15 dark:text-neutral-100 dark:hover:bg-white/10"
                       >
-                        Info ↗
+                        <i className="fa-solid fa-circle-info mr-1" aria-hidden="true" />
+                        Info
                       </a>
                     </li>
                   ))}

@@ -18,7 +18,7 @@ export async function GET(req) {
   const supa = supabaseAdmin();
   let q = supa
     .from('photos')
-    .select('id, owner_id, act_id, act_title, act_time, coords_lat, coords_lng, public_url, created_at, report_count, hidden')
+    .select('id, owner_id, act_id, act_title, act_time, capture_day, coords_lat, coords_lng, public_url, created_at, report_count, hidden')
     .order('created_at', { ascending: false })
     .limit(500);
   if (!isAdmin) {
@@ -46,7 +46,23 @@ export async function POST(req) {
     return NextResponse.json({ error: 'file too large' }, { status: 413 });
   }
 
+  const captureDay = form.get('capture_day') || null;
+
   const supa = supabaseAdmin();
+
+  // One photo per device per day.
+  if (captureDay) {
+    const { data: existing } = await supa
+      .from('photos')
+      .select('id')
+      .eq('owner_id', ownerId)
+      .eq('capture_day', captureDay)
+      .limit(1);
+    if (existing && existing.length > 0) {
+      return NextResponse.json({ error: 'daily limit reached' }, { status: 409 });
+    }
+  }
+
   const id = crypto.randomUUID();
   const path = `${id}.jpg`;
   const bytes = new Uint8Array(await file.arrayBuffer());
@@ -70,6 +86,7 @@ export async function POST(req) {
     act_id: form.get('act_id') || null,
     act_title: form.get('act_title') || null,
     act_time: form.get('act_time') || null,
+    capture_day: captureDay,
     coords_lat: form.get('coords_lat') ? Number(form.get('coords_lat')) : null,
     coords_lng: form.get('coords_lng') ? Number(form.get('coords_lng')) : null,
     storage_path: path,
@@ -82,6 +99,10 @@ export async function POST(req) {
     .single();
   if (insertErr) {
     await supa.storage.from('photos').remove([path]);
+    // Unique (owner_id, capture_day) violation → daily limit reached.
+    if (insertErr.code === '23505') {
+      return NextResponse.json({ error: 'daily limit reached' }, { status: 409 });
+    }
     return NextResponse.json({ error: insertErr.message }, { status: 500 });
   }
   return NextResponse.json(inserted);

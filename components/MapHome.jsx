@@ -60,21 +60,21 @@ export default function MapHome() {
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 z-[900] flex flex-col gap-2 p-3 pb-0">
-        <div className="pointer-events-auto mx-auto flex w-full max-w-2xl items-center gap-3 rounded-full border border-white/10 bg-neutral-950/85 px-4 py-2 backdrop-blur">
+        <div className="pointer-events-auto mx-auto flex w-full max-w-2xl items-center gap-3 rounded-full border border-neutral-900/10 bg-white/85 px-4 py-2 backdrop-blur dark:border-white/10 dark:bg-neutral-950/85">
           <Wordmark size="sm" />
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Cerca acte, lloc, categoria…"
-            className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-neutral-500"
+            className="min-w-0 flex-1 bg-transparent text-sm text-neutral-900 outline-none placeholder:text-neutral-500 dark:text-white"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
               aria-label="Neteja"
-              className="rounded-full px-2 text-neutral-400 hover:text-white"
+              className="rounded-full px-2 text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
             >
-              ✕
+              <i className="fa-solid fa-xmark" aria-hidden="true" />
             </button>
           )}
         </div>
@@ -89,7 +89,7 @@ export default function MapHome() {
         </div>
 
         <div className="pointer-events-none mx-auto max-w-2xl px-2">
-          <span className="pointer-events-auto inline-block rounded-full bg-black/60 px-3 py-1 text-[11px] uppercase tracking-widest text-neutral-300 backdrop-blur">
+          <span className="pointer-events-auto inline-block rounded-full bg-white/70 px-3 py-1 text-[11px] uppercase tracking-widest text-neutral-600 backdrop-blur dark:bg-black/60 dark:text-neutral-300">
             {filtered.length} {filtered.length === 1 ? 'acte' : 'actes'}
           </span>
         </div>
@@ -104,8 +104,8 @@ function DayChip({ label, active, onClick }) {
       onClick={onClick}
       className={`shrink-0 rounded-full border px-3 py-1 text-xs backdrop-blur ${
         active
-          ? 'border-white bg-white text-neutral-950'
-          : 'border-white/15 bg-neutral-950/70 text-neutral-300'
+          ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
+          : 'border-neutral-900/15 bg-white/70 text-neutral-600 dark:border-white/15 dark:bg-neutral-950/70 dark:text-neutral-300'
       }`}
     >
       {label}

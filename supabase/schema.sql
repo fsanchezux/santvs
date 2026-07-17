@@ -25,6 +25,15 @@ alter table public.photos
 create index if not exists photos_hidden_idx
   on public.photos (hidden);
 
+-- 2b. One photo per device per day.
+-- capture_day is the local calendar day (YYYY-MM-DD) sent by the client.
+alter table public.photos
+  add column if not exists capture_day text;
+
+create unique index if not exists photos_owner_day_uniq
+  on public.photos (owner_id, capture_day)
+  where capture_day is not null;
+
 -- 3. Per-device report log (one row per (photo, reporter))
 create table if not exists public.photo_reports (
   photo_id uuid not null references public.photos(id) on delete cascade,
