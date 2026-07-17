@@ -8,11 +8,11 @@ import { currentTheme } from '@/lib/theme';
 
 const MATARO_CENTER = [41.5390, 2.4449];
 
-function makePinIcon({ color, emoji, count }) {
+function makePinIcon({ color, icon, count }) {
   const badge = count > 1 ? `<span class="count">${count}</span>` : '';
   return L.divIcon({
     className: '',
-    html: `<div class="santes-pin" style="background:${color}">${emoji}${badge}</div>`,
+    html: `<div class="santes-pin" style="background:${color}"><i class="${icon}" aria-hidden="true"></i>${badge}</div>`,
     iconSize: [34, 34],
     iconAnchor: [17, 17],
     popupAnchor: [0, -14],
@@ -85,7 +85,7 @@ export default function MapView({ events }) {
         const meta = CATEGORIES[cat];
         const icon = makePinIcon({
           color: meta.color,
-          emoji: meta.emoji,
+          icon: meta.icon,
           count: g.events.length,
         });
         return (
