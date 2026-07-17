@@ -6,6 +6,7 @@ import Wordmark from './Wordmark';
 import { events } from '@/data/events';
 import { venues } from '@/data/venues';
 import { CATEGORIES, resolveCategory } from '@/lib/categories';
+import { todayKey } from '@/lib/dailyLimit';
 
 const MapView = dynamic(() => import('./MapView'), { ssr: false });
 
@@ -30,10 +31,16 @@ export default function MapHome() {
   const [day, setDay] = useState(null);
   const [focusVenueId, setFocusVenueId] = useState(null);
 
-  // Arriving from the acts list (/?venue=<id>): center + open that venue.
+  // On load: default the day filter to today (if within the festival). When
+  // arriving from the acts list (/?venue=<id>) keep all days so the pin shows.
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('venue');
-    if (id) setFocusVenueId(id);
+    if (id) {
+      setFocusVenueId(id);
+      return;
+    }
+    const today = todayKey();
+    if (DAYS.some(d => d.iso === today)) setDay(today);
   }, []);
 
   const enriched = useMemo(
