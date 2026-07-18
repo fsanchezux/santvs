@@ -143,7 +143,18 @@ export default function MapView({ events, focusVenueId }) {
                     Com hi vaig
                   </a>
                 </div>
-                <ul className="mt-1 flex max-h-[44vh] flex-col divide-y divide-neutral-900/5 overflow-y-auto dark:divide-white/5">
+                <ul
+                  ref={el => {
+                    // Let the list scroll on wheel/touch instead of the map
+                    // panning or zooming underneath it.
+                    if (el && !el._santesScrollBound) {
+                      el._santesScrollBound = true;
+                      L.DomEvent.disableScrollPropagation(el);
+                      L.DomEvent.disableClickPropagation(el);
+                    }
+                  }}
+                  className="mt-1 flex max-h-[44vh] flex-col divide-y divide-neutral-900/5 overflow-y-auto overscroll-contain dark:divide-white/5"
+                >
                   {g.events.map(e => {
                     const m = CATEGORIES[e.category] || CATEGORIES.altres;
                     return (
