@@ -85,10 +85,13 @@ html.dark .leaflet-popup-tip {
   /* Lighter shadow that follows the shape outline (no white border). */
   filter: drop-shadow(0 1px 2px rgba(0,0,0,.22));
 }
-.santes-pin-shape {
+/* Compound selector so it beats Leaflet's `.leaflet-map-pane svg { z-index:200 }`
+   and stays *under* the icon. */
+.santes-pin .santes-pin-shape {
   position: absolute;
   inset: 0;
   width: 100%; height: 100%;
+  z-index: 0;
 }
 /* The icon sits on top of the shape, sized and nudged to stay optically
    centred inside each shape's usable area. */
