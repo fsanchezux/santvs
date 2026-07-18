@@ -124,13 +124,12 @@ export default function MapView({ events, focusVenueId }) {
             <Popup
               className="santes-popup"
               maxWidth={300}
-              maxHeight={320}
               keepInView
               autoPanPaddingTopLeft={[10, 128]}
               autoPanPaddingBottomRight={[10, 96]}
             >
-              <div className="w-[272px] max-w-[74vw]">
-                <div className="sticky top-0 z-10 flex items-center justify-between gap-3 bg-white pb-2 dark:bg-[#171717]">
+              <div className="flex w-[272px] max-w-[74vw] flex-col">
+                <div className="flex items-center justify-between gap-3 border-b border-neutral-900/10 pb-2 dark:border-white/10">
                   <p className="text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                     {g.venue.name}
                   </p>
@@ -144,26 +143,38 @@ export default function MapView({ events, focusVenueId }) {
                     Com hi vaig
                   </a>
                 </div>
-                <ul className="mt-3 flex flex-col divide-y divide-neutral-900/5 dark:divide-white/5">
-                  {g.events.map(e => (
-                    <li key={e.id} className="flex items-center justify-between gap-3 py-2">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[11px] uppercase tracking-wider text-neutral-500">
-                          {e.time}
-                        </p>
-                        <p className="text-sm font-medium text-neutral-900 dark:text-white">{e.title}</p>
-                      </div>
-                      <a
-                        href={infoUrl(e)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="shrink-0 rounded-full border border-neutral-900/15 px-2.5 py-1 text-[11px] font-medium text-neutral-700 hover:bg-neutral-900/10 dark:border-white/15 dark:text-neutral-100 dark:hover:bg-white/10"
-                      >
-                        <i className="fa-solid fa-circle-info mr-1" aria-hidden="true" />
-                        Info
-                      </a>
-                    </li>
-                  ))}
+                <ul className="mt-1 flex max-h-[44vh] flex-col divide-y divide-neutral-900/5 overflow-y-auto dark:divide-white/5">
+                  {g.events.map(e => {
+                    const m = CATEGORIES[e.category] || CATEGORIES.altres;
+                    return (
+                      <li key={e.id} className="flex items-center gap-2.5 py-2">
+                        <span
+                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white"
+                          style={{ background: m.color }}
+                          title={m.label}
+                        >
+                          <i className={`${m.icon} text-[11px]`} aria-hidden="true" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[11px] uppercase tracking-wider text-neutral-500">
+                            {e.time}
+                          </p>
+                          <p className="text-sm font-medium leading-tight text-neutral-900 dark:text-white">
+                            {e.title}
+                          </p>
+                        </div>
+                        <a
+                          href={infoUrl(e)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 rounded-full border border-neutral-900/15 px-2.5 py-1 text-[11px] font-medium text-neutral-700 hover:bg-neutral-900/10 dark:border-white/15 dark:text-neutral-100 dark:hover:bg-white/10"
+                        >
+                          <i className="fa-solid fa-circle-info mr-1" aria-hidden="true" />
+                          Info
+                        </a>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </Popup>
