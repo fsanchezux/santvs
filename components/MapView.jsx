@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { CATEGORIES } from '@/lib/categories';
 import { shapeSvg } from '@/lib/pinShapes';
+import { actImages } from '@/data/actImages';
 import { currentTheme } from '@/lib/theme';
 
 const MATARO_CENTER = [41.5390, 2.4449];
@@ -157,15 +158,24 @@ export default function MapView({ events, focusVenueId }) {
                 >
                   {g.events.map(e => {
                     const m = CATEGORIES[e.category] || CATEGORIES.altres;
+                    const img = actImages[e.id];
                     return (
                       <li key={e.id} className="flex items-center gap-2.5 py-2">
-                        <span
-                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white"
-                          style={{ background: m.color }}
-                          title={m.label}
-                        >
-                          <i className={`${m.icon} text-[11px]`} aria-hidden="true" />
-                        </span>
+                        {img ? (
+                          <img
+                            src={img}
+                            alt=""
+                            className="h-11 w-11 shrink-0 rounded-lg bg-neutral-200 object-cover dark:bg-neutral-800"
+                          />
+                        ) : (
+                          <span
+                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-white"
+                            style={{ background: m.color }}
+                            title={m.label}
+                          >
+                            <i className={`${m.icon} text-sm`} aria-hidden="true" />
+                          </span>
+                        )}
                         <div className="min-w-0 flex-1">
                           <p className="text-[11px] uppercase tracking-wider text-neutral-500">
                             {e.time}
