@@ -261,7 +261,7 @@ export default function Gallery() {
             )}
           </div>
 
-          <img src={open.public_url} alt="" className="flex-1 object-contain" />
+          <img src={open.public_url} alt="" className="min-h-0 w-full flex-1 object-contain" />
 
           <div
             className="px-6 pb-4 pt-3 text-sm text-neutral-300"

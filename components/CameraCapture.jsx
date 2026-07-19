@@ -191,7 +191,7 @@ export default function CameraCapture() {
   if (preview) {
     return (
       <div className="fixed inset-0 flex flex-col bg-black">
-        <img src={preview.url} alt="Previsualització" className="flex-1 object-contain" />
+        <img src={preview.url} alt="Previsualització" className="min-h-0 w-full flex-1 object-contain" />
         <div className="pb-[env(safe-area-inset-bottom)]">
           <div className="flex items-center justify-around gap-4 border-t border-white/10 bg-neutral-950 px-6 py-4">
             <button
