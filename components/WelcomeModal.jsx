@@ -63,24 +63,7 @@ export default function WelcomeModal() {
         </div>
 
         <div className="overflow-y-auto px-6 py-5">
-          {/* Welcome block */}
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Benvingut/da</h2>
-          <p className="mt-1 text-sm text-neutral-500">
-            Ja coneixes l’aplicació. Una mica sobre el projecte:
-          </p>
-
-          {/* Separated block — the project statement */}
-          <div className="mt-4 rounded-2xl border border-neutral-900/10 bg-neutral-50 p-4 dark:border-white/10 dark:bg-neutral-950">
-            <p className="text-sm italic leading-relaxed text-neutral-600 dark:text-neutral-300">
-              Aquest projecte sorgeix de la inquietud i de la necessitat d’expressar, des del meu
-              prisma, una part dels sentiments que m’evoca la festa major. Aquest any, tot neix a
-              partir de la idea de fer un branding unint dos conceptes allunyats entre si, però
-              alineats amb el meu moment vital. He desenvolupat un branding de Les Santes
-              inspirant-me en el llenguatge visual de «Strava».
-            </p>
-          </div>
-
-          <p className="mt-4 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
+          <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
             Si us ha agradat el projecte, podeu seguir-me a les{' '}
             <a
               href={SOCIAL_URL}
