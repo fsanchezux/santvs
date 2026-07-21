@@ -33,7 +33,24 @@ const STEPS = [
     route: '/galeria',
     icon: 'fa-images',
     title: 'La galeria',
-    text: 'Una de les parts que fa a Strava important és la capacitat de poder compartir els entrenaments; en aquest cas ho hem reformulat amb la idea de que es comparteixin les vivències als diferents actes de Les Santes.',
+    text: 'I per acabar, el que fa que l’aplicació en la que ens estem inspirant tingui tant d’èxit és la seva faceta de xarxa social. En aquest cas, l’adaptació i la sinergia entre les dues idees no ha sigut tan directa.',
+    steps: [
+      {
+        icon: 'fa-solid fa-camera-retro',
+        title: 'Estil BeReal',
+        text: 'Primer un selfie i tot seguit la foto del davant. Es combinen en una sola imatge.',
+      },
+      {
+        icon: 'fa-solid fa-calendar-day',
+        title: 'Una foto al dia',
+        text: 'Cada dia de Les Santes pots pujar una foto. Tria bé el teu moment!',
+      },
+      {
+        icon: 'fa-regular fa-images',
+        title: 'Ordenada per dies',
+        text: 'La galeria és compartida i s’agrupa per dies. Comparteix o descarrega la que vulguis.',
+      },
+    ],
   },
 ];
 
@@ -72,7 +89,7 @@ export default function TourController() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[1500] flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+76px)]">
-      <div className="pointer-events-auto w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
+      <div className="pointer-events-auto max-h-[78vh] w-full max-w-sm overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
         <div className="flex items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fc4c02]/10 text-[#fc4c02]">
             <i className={`fa-solid ${s.icon} text-lg`} aria-hidden="true" />
@@ -103,6 +120,22 @@ export default function TourController() {
             <i className="fa-solid fa-circle-question" aria-hidden="true" />
             Què és Strava?
           </button>
+        )}
+
+        {s.steps && (
+          <ul className="mt-4 flex flex-col gap-3 border-t border-neutral-900/5 pt-4 dark:border-white/10">
+            {s.steps.map(st => (
+              <li key={st.title} className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fc4c02]/10 text-[#fc4c02]">
+                  <i className={`${st.icon} text-sm`} aria-hidden="true" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-neutral-900 dark:text-white">{st.title}</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{st.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         )}
 
         <div className="mt-4 flex items-center justify-center gap-1.5">

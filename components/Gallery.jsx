@@ -5,8 +5,6 @@ import { listPhotos, deletePhoto, reportPhoto } from '@/lib/photos';
 import { getOwnerId } from '@/lib/ownerId';
 import { dayLabels } from '@/data/events';
 
-const TUTORIAL_KEY = 'santvs_gallery_tutorial_seen';
-
 function filenameFor(photo) {
   const stamp = new Date(photo.created_at)
     .toISOString()
@@ -53,14 +51,10 @@ export default function Gallery() {
   const [open, setOpen] = useState(null);
   const [canShare, setCanShare] = useState(false);
   const [ownerId, setOwnerId] = useState(null);
-  const [showTutorial, setShowTutorial] = useState(false);
   const [tab, setTab] = useState('all'); // 'all' | 'mine'
 
   useEffect(() => {
     setOwnerId(getOwnerId());
-    try {
-      if (!window.localStorage.getItem(TUTORIAL_KEY)) setShowTutorial(true);
-    } catch {}
     (async () => {
       try {
         const rows = await listPhotos();
@@ -73,25 +67,12 @@ export default function Gallery() {
   }, []);
 
   useEffect(() => {
-    const open = () => setShowTutorial(true);
-    window.addEventListener('santes:open-tutorial', open);
-    return () => window.removeEventListener('santes:open-tutorial', open);
-  }, []);
-
-  useEffect(() => {
     setCanShare(
       typeof navigator !== 'undefined' &&
         typeof navigator.canShare === 'function' &&
         navigator.canShare({ files: [new File([''], 'x.jpg', { type: 'image/jpeg' })] })
     );
   }, []);
-
-  const dismissTutorial = () => {
-    setShowTutorial(false);
-    try {
-      window.localStorage.setItem(TUTORIAL_KEY, '1');
-    } catch {}
-  };
 
   const mineCount = useMemo(
     () => (photos && ownerId ? photos.filter(p => p.owner_id === ownerId).length : 0),
@@ -164,21 +145,15 @@ export default function Gallery() {
     }
   };
 
-  const tutorial = showTutorial ? <TutorialOverlay onClose={dismissTutorial} /> : null;
-
   if (photos === null) {
     return (
-      <>
-        {tutorial}
-        <p className="mx-auto max-w-2xl px-4 pt-10 text-center text-neutral-500 dark:text-neutral-400">Carregant…</p>
-      </>
+      <p className="mx-auto max-w-2xl px-4 pt-10 text-center text-neutral-500 dark:text-neutral-400">Carregant…</p>
     );
   }
 
   if (photos.length === 0) {
     return (
       <>
-        {tutorial}
         <div className="mx-auto max-w-2xl px-6 pt-20 text-center">
           {error ? (
             <>
@@ -201,7 +176,6 @@ export default function Gallery() {
 
   return (
     <>
-      {tutorial}
       <div className="mx-auto max-w-3xl px-2 pb-32 pt-4">
         <div className="mb-3 flex gap-2 px-1">
           <TabButton label="Totes" count={photos.length} active={tab === 'all'} onClick={() => setTab('all')} />
@@ -351,58 +325,5 @@ function TabButton({ label, count, active, onClick }) {
       {label}
       <span className={active ? 'opacity-70' : 'text-neutral-400'}>{count}</span>
     </button>
-  );
-}
-
-function TutorialOverlay({ onClose }) {
-  const steps = [
-    {
-      icon: 'fa-solid fa-camera-retro',
-      title: 'Estil BeReal',
-      text: 'Primer un selfie i tot seguit la foto del davant. Es combinen en una sola imatge.',
-    },
-    {
-      icon: 'fa-solid fa-calendar-day',
-      title: 'Una foto al dia',
-      text: 'Cada dia de Les Santes pots pujar una foto. Tria bé el teu moment!',
-    },
-    {
-      icon: 'fa-regular fa-images',
-      title: 'Ordenada per dies',
-      text: 'La galeria és compartida i s’agrupa per dies. Comparteix o descarrega la que vulguis.',
-    },
-  ];
-
-  return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl dark:bg-neutral-900">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#fc4c02] text-white">
-          <i className="fa-solid fa-wand-magic-sparkles text-xl" aria-hidden="true" />
-        </div>
-        <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Benvingut/da a la galeria</h2>
-        <p className="mt-1 text-sm text-neutral-500">Com funciona:</p>
-
-        <ul className="mt-5 flex flex-col gap-4 text-left">
-          {steps.map(s => (
-            <li key={s.title} className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-900/5 text-[#fc4c02] dark:bg-white/10">
-                <i className={s.icon} aria-hidden="true" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-neutral-900 dark:text-white">{s.title}</p>
-                <p className="text-sm text-neutral-500">{s.text}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <button
-          onClick={onClose}
-          className="mt-6 w-full rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white dark:bg-white dark:text-neutral-950"
-        >
-          Entesos!
-        </button>
-      </div>
-    </div>
   );
 }
