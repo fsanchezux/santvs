@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Wordmark from './Wordmark';
+import ShareButton from './ShareButton';
 import { events } from '@/data/events';
 import { venues } from '@/data/venues';
 import { CATEGORIES, resolveCategory } from '@/lib/categories';
@@ -91,6 +92,7 @@ export default function MapHome() {
               <i className="fa-solid fa-xmark" aria-hidden="true" />
             </button>
           )}
+          <ShareButton className="-mr-1 shrink-0" />
         </div>
 
         <div className="pointer-events-auto mx-auto w-full max-w-2xl overflow-x-auto no-scrollbar">

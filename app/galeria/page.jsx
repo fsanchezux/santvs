@@ -2,6 +2,7 @@ import Gallery from '@/components/Gallery';
 import BottomNav from '@/components/BottomNav';
 import Wordmark from '@/components/Wordmark';
 import GalleryInfoButton from '@/components/GalleryInfoButton';
+import ShareButton from '@/components/ShareButton';
 
 export const metadata = { title: 'Galeria · SANTVS' };
 
@@ -14,6 +15,7 @@ export default function GaleriaPage() {
           <div className="flex items-center gap-1">
             <span className="text-[10px] uppercase tracking-widest text-neutral-500">Galeria</span>
             <GalleryInfoButton />
+            <ShareButton />
           </div>
         </div>
       </header>

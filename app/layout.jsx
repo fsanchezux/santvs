@@ -1,6 +1,7 @@
 import './globals.css';
 import { Archivo_Black, Inter } from 'next/font/google';
 import ThemeController from '@/components/ThemeController';
+import WelcomeModal from '@/components/WelcomeModal';
 
 const archivo = Archivo_Black({
   subsets: ['latin'],
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-[var(--font-body)]">
         <ThemeController />
+        <WelcomeModal />
         {children}
       </body>
     </html>
