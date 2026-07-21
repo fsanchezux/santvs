@@ -3,27 +3,40 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Wordmark from './Wordmark';
-import { getShareUrl, copyShareUrl, shareApp } from '@/lib/share';
+import { getShareUrl, copyShareUrl, shareStoryImage } from '@/lib/share';
 
 const SEEN_KEY = 'santvs_welcome_seen';
 
 const SOCIAL_URL = 'https://www.instagram.com/fsanchez.co'; // "podeu seguir-me a les xarxes socials"
 
-// Shown as the FINAL facet of the guided tour (opened via the
-// `santvs:open-welcome` event fired by TourController when the tour ends).
+// Two entry points, same content:
+//  · `santvs:open-welcome` → final facet of the tour (with the "start" button)
+//  · `santvs:open-share`   → the reusable share sheet (from the ShareButton)
 export default function WelcomeModal() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [showStart, setShowStart] = useState(true);
   const [url, setUrl] = useState('');
   const [copied, setCopied] = useState(false);
-  const [canShare, setCanShare] = useState(false);
+  const [igBusy, setIgBusy] = useState(false);
+  const [igError, setIgError] = useState(false);
 
   useEffect(() => {
     setUrl(getShareUrl());
-    setCanShare(typeof navigator !== 'undefined' && typeof navigator.share === 'function');
-    const reopen = () => setOpen(true);
-    window.addEventListener('santvs:open-welcome', reopen);
-    return () => window.removeEventListener('santvs:open-welcome', reopen);
+    const openFinale = () => {
+      setShowStart(true);
+      setOpen(true);
+    };
+    const openShare = () => {
+      setShowStart(false);
+      setOpen(true);
+    };
+    window.addEventListener('santvs:open-welcome', openFinale);
+    window.addEventListener('santvs:open-share', openShare);
+    return () => {
+      window.removeEventListener('santvs:open-welcome', openFinale);
+      window.removeEventListener('santvs:open-share', openShare);
+    };
   }, []);
 
   const markSeen = () => {
@@ -44,6 +57,15 @@ export default function WelcomeModal() {
     if (!ok) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
+  };
+
+  const onInstagram = async () => {
+    if (igBusy) return;
+    setIgBusy(true);
+    setIgError(false);
+    const result = await shareStoryImage();
+    if (result === 'failed') setIgError(true);
+    setIgBusy(false);
   };
 
   if (!open) return null;
@@ -93,27 +115,33 @@ export default function WelcomeModal() {
                 {copied ? 'Copiat!' : 'Copiar'}
               </button>
             </div>
-            {canShare && (
-              <button
-                onClick={shareApp}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-neutral-900/15 px-4 py-2 text-xs font-medium text-neutral-700 dark:border-white/15 dark:text-neutral-200"
-              >
-                <i className="fa-solid fa-share-nodes" aria-hidden="true" />
-                Compartir…
-              </button>
+            <button
+              onClick={onInstagram}
+              disabled={igBusy}
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#f58529] via-[#dd2a7b] to-[#8134af] px-4 py-2.5 text-xs font-semibold text-white disabled:opacity-60"
+            >
+              <i className={`fa-brands ${igBusy ? 'fa-spinner fa-spin' : 'fa-instagram'} text-sm`} aria-hidden="true" />
+              Compartir a Instagram Stories
+            </button>
+            {igError && (
+              <p className="mt-1.5 text-center text-[11px] text-red-500">
+                No s’ha pogut compartir la imatge. Torna-ho a provar.
+              </p>
             )}
           </div>
         </div>
 
-        <div className="border-t border-neutral-900/5 px-6 py-4 dark:border-white/10">
-          <button
-            onClick={() => close(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#fc4c02] px-6 py-3 text-sm font-semibold text-white"
-          >
-            Començar a utilitzar
-            <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-          </button>
-        </div>
+        {showStart && (
+          <div className="border-t border-neutral-900/5 px-6 py-4 dark:border-white/10">
+            <button
+              onClick={() => close(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#fc4c02] px-6 py-3 text-sm font-semibold text-white"
+            >
+              Començar a utilitzar
+              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
