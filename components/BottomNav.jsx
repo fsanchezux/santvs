@@ -49,7 +49,7 @@ function ShutterLink() {
     <Link
       href="/camera"
       aria-label="Fer una foto"
-      className="relative -mt-6 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#fc4c02] text-white shadow-lg shadow-[#fc4c02]/40 ring-4 ring-white transition active:scale-95 dark:ring-neutral-950"
+      className="relative -mt-6 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#fc4c02] text-white ring-4 ring-white transition active:scale-95 dark:ring-neutral-950"
     >
       <i className="fa-solid fa-camera text-xl" aria-hidden="true" />
     </Link>
