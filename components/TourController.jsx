@@ -213,8 +213,8 @@ function StravaModal({ onClose }) {
         className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl dark:bg-neutral-900"
       >
         <div className="flex items-center justify-between">
-          <span className="flex items-center gap-2 text-lg font-bold text-neutral-900 dark:text-white">
-            <i className="fa-brands fa-strava text-[#fc4c02]" aria-hidden="true" />
+          <span className="flex items-center gap-2 text-lg font-bold text-[#fc4c02]">
+            <i className="fa-brands fa-strava" aria-hidden="true" />
             Què és Strava?
           </span>
           <button
