@@ -30,7 +30,7 @@ export default function Wordmark({
     );
   }
 
-  const h = HEIGHTS[size] ?? HEIGHTS.md;
+  const h = typeof size === 'number' ? size : (HEIGHTS[size] ?? HEIGHTS.md);
   return (
     <img
       src="/logo-santvs.svg"
