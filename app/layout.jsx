@@ -45,11 +45,13 @@ export const metadata = {
     siteName: SITE_NAME,
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
+    images: [{ url: '/og.jpg', width: 1080, height: 1450, alt: SITE_NAME }],
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
+    images: ['/og.jpg'],
   },
   appleWebApp: {
     capable: true,
