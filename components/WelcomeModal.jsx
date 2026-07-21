@@ -97,7 +97,10 @@ export default function WelcomeModal() {
             >
               xarxes socials
             </a>
-            . I recordeu: el boca-orella és l’eina més poderosa, compartir-ho es la millor formar
+            .
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
+            Recordeu: el boca-orella és l’eina més poderosa, compartir-ho es la millor formar
             d’ajudar.
           </p>
 
