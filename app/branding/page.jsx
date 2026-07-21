@@ -14,7 +14,7 @@ export default function BrandingPage() {
     <>
       <div className="fixed inset-0 flex flex-col bg-black pb-[calc(env(safe-area-inset-bottom)+64px)]">
         <header className="flex items-center justify-between px-4 py-3">
-          <Wordmark size={20} className="[filter:invert(1)]" />
+          <Wordmark size={20} />
           <div className="flex items-center gap-1">
             <span className="text-[10px] uppercase tracking-widest text-neutral-400">Branding</span>
             <a

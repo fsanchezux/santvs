@@ -27,9 +27,7 @@ html.dark body {
 }
 .countdown-pop { animation: countdown-pop 0.9s ease-out forwards; }
 
-/* The SANTVS logo art is near-white; darken it for the light (daytime) theme. */
-.wordmark-logo { filter: invert(1); }
-html.dark .wordmark-logo { filter: none; }
+/* The SANTVS logo art is orange (#fc4c02) — visible on both light and dark. */
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
