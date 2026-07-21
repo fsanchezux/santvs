@@ -6,7 +6,6 @@ import { getShareUrl, copyShareUrl, shareApp } from '@/lib/share';
 
 const SEEN_KEY = 'santvs_welcome_seen';
 
-const BRANDING_URL = '/branding'; // "Per veure el branding, podeu anar aquí"
 const SOCIAL_URL = 'https://www.instagram.com/fsanchez.co'; // "podeu seguir-me a les xarxes socials"
 
 export default function WelcomeModal() {
@@ -23,13 +22,25 @@ export default function WelcomeModal() {
     } catch {
       setOpen(true);
     }
+    const reopen = () => setOpen(true);
+    window.addEventListener('santvs:open-welcome', reopen);
+    return () => window.removeEventListener('santvs:open-welcome', reopen);
   }, []);
 
-  const close = () => {
-    setOpen(false);
+  const markSeen = () => {
     try {
       window.localStorage.setItem(SEEN_KEY, '1');
     } catch {}
+  };
+
+  // Close the modal. When `startTour` is true, kick off the guided tour.
+  const close = startTour => {
+    setOpen(false);
+    markSeen();
+    if (startTour) {
+      // Let the modal unmount before the tour navigates.
+      setTimeout(() => window.dispatchEvent(new Event('santvs:start-tour')), 60);
+    }
   };
 
   const onCopy = async () => {
@@ -47,7 +58,7 @@ export default function WelcomeModal() {
         <div className="flex items-center justify-between border-b border-neutral-900/5 px-6 py-4 dark:border-white/10">
           <Wordmark size="md" />
           <button
-            onClick={close}
+            onClick={() => close(false)}
             aria-label="Tancar"
             className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-400 hover:bg-neutral-900/5 hover:text-neutral-900 dark:hover:bg-white/10 dark:hover:text-white"
           >
@@ -56,39 +67,36 @@ export default function WelcomeModal() {
         </div>
 
         <div className="overflow-y-auto px-6 py-5">
+          {/* Welcome block */}
           <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Benvingut/da</h2>
+          <p className="mt-1 text-sm text-neutral-500">
+            Fem un tour ràpid per l’aplicació en acabar.
+          </p>
 
-          <div className="mt-3 space-y-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
-            <p>
+          {/* Separated block — the project statement */}
+          <div className="mt-4 rounded-2xl border border-neutral-900/10 bg-neutral-50 p-4 dark:border-white/10 dark:bg-neutral-950">
+            <p className="text-sm italic leading-relaxed text-neutral-600 dark:text-neutral-300">
               Aquest projecte sorgeix de la inquietud i de la necessitat d’expressar, des del meu
               prisma, una part dels sentiments que m’evoca la festa major. Aquest any, tot neix a
               partir de la idea de fer un branding unint dos conceptes allunyats entre si, però
               alineats amb el meu moment vital. He desenvolupat un branding de Les Santes
-              inspirant-me en el llenguatge visual de «Strava». Per veure el branding, podeu anar{' '}
-              <a
-                href={BRANDING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-[#fc4c02] underline underline-offset-2"
-              >
-                aquí
-              </a>
-              .
-            </p>
-            <p>
-              Si us ha agradat el projecte, podeu seguir-me a les{' '}
-              <a
-                href={SOCIAL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-[#fc4c02] underline underline-offset-2"
-              >
-                xarxes socials
-              </a>
-              . I recordeu: el boca-orella és l’eina més poderosa. Compartiu-lo amb les vostres
-              persones properes.
+              inspirant-me en el llenguatge visual de «Strava».
             </p>
           </div>
+
+          <p className="mt-4 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
+            Si us ha agradat el projecte, podeu seguir-me a les{' '}
+            <a
+              href={SOCIAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#fc4c02] underline underline-offset-2"
+            >
+              xarxes socials
+            </a>
+            . I recordeu: el boca-orella és l’eina més poderosa, compartir-ho es la millor formar
+            d’ajudar.
+          </p>
 
           <div className="mt-5 rounded-2xl border border-neutral-900/10 bg-neutral-50 p-3 dark:border-white/10 dark:bg-neutral-950">
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
@@ -120,10 +128,11 @@ export default function WelcomeModal() {
 
         <div className="border-t border-neutral-900/5 px-6 py-4 dark:border-white/10">
           <button
-            onClick={close}
-            className="w-full rounded-full bg-[#fc4c02] px-6 py-3 text-sm font-semibold text-white"
+            onClick={() => close(true)}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#fc4c02] px-6 py-3 text-sm font-semibold text-white"
           >
-            Entesos!
+            Comença el tour
+            <i className="fa-solid fa-arrow-right" aria-hidden="true" />
           </button>
         </div>
       </div>

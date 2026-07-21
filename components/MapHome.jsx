@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Wordmark from './Wordmark';
 import ShareButton from './ShareButton';
+import TourButton from './TourButton';
 import { events } from '@/data/events';
 import { venues } from '@/data/venues';
 import { CATEGORIES, resolveCategory } from '@/lib/categories';
@@ -92,6 +93,7 @@ export default function MapHome() {
               <i className="fa-solid fa-xmark" aria-hidden="true" />
             </button>
           )}
+          <TourButton className="shrink-0" />
           <ShareButton className="-mr-1 shrink-0" />
         </div>
 
