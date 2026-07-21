@@ -7,7 +7,7 @@ const items = [
   { href: '/llista', label: 'Llista', icon: 'fa-solid fa-list-ul' },
   { href: '/', label: 'Mapa', icon: 'fa-solid fa-map-location-dot' },
   { href: '/galeria', label: 'Galeria', icon: 'fa-regular fa-images' },
-  { href: '/branding', label: 'Branding', icon: 'fa-solid fa-palette' },
+  { href: '/branding', label: 'Branding', icon: 'fa-solid fa-film' },
 ];
 
 export default function BottomNav() {
