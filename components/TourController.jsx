@@ -11,7 +11,7 @@ const STEPS = [
     route: '/branding',
     icon: 'fa-film',
     title: 'El branding',
-    text: 'El projecte arrenca aquí: he desenvolupat una identitat visual per a la Festa Major de Les Santes inspirada en el llenguatge visual de Strava.',
+    text: 'He desenvolupat una identitat visual per a la Festa Major de Les Santes inspirada en el llenguatge visual de Strava.',
     strava: true,
   },
   {
