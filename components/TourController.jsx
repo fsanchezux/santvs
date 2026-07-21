@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 const STEPS = [
   {
     route: '/branding',
-    icon: 'fa-palette',
+    icon: 'fa-film',
     title: 'El branding',
     text: 'Tot arrenca aquí: la identitat visual de Les Santes, inspirada en el llenguatge de «Strava».',
   },
@@ -17,19 +17,19 @@ const STEPS = [
     route: '/',
     icon: 'fa-map-location-dot',
     title: 'El mapa',
-    text: 'La pantalla principal. Explora tots els actes situats sobre el mapa de Mataró.',
+    text: 'Per completar el branding no podíem deixar l’aplicació sense el mapa principal de Strava; en aquest cas no hi trobaràs rutes sinó els diferents actes que hi han durant la festa major.',
   },
   {
     route: '/llista',
     icon: 'fa-list-ul',
     title: 'La llista d’actes',
-    text: 'Tots els actes ordenats i filtrables per dia, amb tots els detalls.',
+    text: 'Complementa l’apartat de mapa i dóna una versió adaptada dels actes.',
   },
   {
     route: '/galeria',
     icon: 'fa-images',
     title: 'La galeria',
-    text: 'Fes-te fotos estil BeReal als actes amb el botó taronja i comparteix-les amb tothom.',
+    text: 'Una de les parts que fa a Strava important és la capacitat de poder compartir els entrenaments; en aquest cas ho hem reformulat amb la idea de que es comparteixin les vivències als diferents actes de Les Santes.',
   },
 ];
 
