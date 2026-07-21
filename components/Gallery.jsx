@@ -54,6 +54,7 @@ export default function Gallery() {
   const [canShare, setCanShare] = useState(false);
   const [ownerId, setOwnerId] = useState(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [tab, setTab] = useState('all'); // 'all' | 'mine'
 
   useEffect(() => {
     setOwnerId(getOwnerId());
@@ -92,7 +93,18 @@ export default function Gallery() {
     } catch {}
   };
 
-  const groups = useMemo(() => (photos ? groupByDay(photos) : []), [photos]);
+  const mineCount = useMemo(
+    () => (photos && ownerId ? photos.filter(p => p.owner_id === ownerId).length : 0),
+    [photos, ownerId]
+  );
+
+  const visible = useMemo(() => {
+    if (!photos) return [];
+    if (tab === 'mine') return photos.filter(p => ownerId && p.owner_id === ownerId);
+    return photos;
+  }, [photos, tab, ownerId]);
+
+  const groups = useMemo(() => groupByDay(visible), [visible]);
 
   const handleDelete = async id => {
     try {
@@ -191,34 +203,63 @@ export default function Gallery() {
     <>
       {tutorial}
       <div className="mx-auto max-w-3xl px-2 pb-32 pt-4">
-        {groups.map(([key, dayPhotos]) => (
-          <section key={key} className="mb-6">
-            <div className="sticky top-[52px] z-10 mb-2 flex items-center gap-2 px-1 py-1">
-              <span className="rounded-full bg-neutral-900/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-neutral-600 backdrop-blur dark:bg-white/10 dark:text-neutral-300">
-                {dayHeading(key)}
-              </span>
-              <span className="text-[11px] text-neutral-400">
-                {dayPhotos.length} {dayPhotos.length === 1 ? 'foto' : 'fotos'}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-1 sm:gap-2">
-              {dayPhotos.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => setOpen(p)}
-                  className="relative aspect-square overflow-hidden rounded-md bg-neutral-200 dark:bg-neutral-900"
-                >
-                  <img
-                    src={p.public_url}
-                    alt={p.act_title || 'Foto'}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </button>
-              ))}
-            </div>
-          </section>
-        ))}
+        <div className="mb-3 flex gap-2 px-1">
+          <TabButton label="Totes" count={photos.length} active={tab === 'all'} onClick={() => setTab('all')} />
+          <TabButton label="Les meves fotos" count={mineCount} active={tab === 'mine'} onClick={() => setTab('mine')} />
+        </div>
+
+        {tab === 'mine' && mineCount === 0 ? (
+          <div className="px-6 pt-16 text-center">
+            <i className="fa-regular fa-user text-4xl text-neutral-400" aria-hidden="true" />
+            <p className="mt-4 text-lg text-neutral-700 dark:text-neutral-200">Encara no has fet cap foto.</p>
+            <p className="mt-2 text-sm text-neutral-500">
+              Prem el botó taronja de la barra inferior i apareixerà aquí.
+            </p>
+          </div>
+        ) : (
+          groups.map(([key, dayPhotos]) => (
+            <section key={key} className="mb-6">
+              <div className="sticky top-[52px] z-10 mb-2 flex items-center gap-2 px-1 py-1">
+                <span className="rounded-full bg-neutral-900/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-neutral-600 backdrop-blur dark:bg-white/10 dark:text-neutral-300">
+                  {dayHeading(key)}
+                </span>
+                <span className="text-[11px] text-neutral-400">
+                  {dayPhotos.length} {dayPhotos.length === 1 ? 'foto' : 'fotos'}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 sm:gap-2">
+                {dayPhotos.map(p => {
+                  const mine = ownerId && p.owner_id === ownerId;
+                  return (
+                    <div
+                      key={p.id}
+                      className="relative aspect-square overflow-hidden rounded-md bg-neutral-200 dark:bg-neutral-900"
+                    >
+                      <button onClick={() => setOpen(p)} className="absolute inset-0 h-full w-full">
+                        <img
+                          src={p.public_url}
+                          alt={p.act_title || 'Foto'}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      </button>
+                      {mine && (
+                        <button
+                          onClick={() => handleShare(p)}
+                          aria-label="Compartir la foto"
+                          title="Compartir"
+                          className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur transition active:scale-95"
+                        >
+                          <i className="fa-solid fa-share-nodes text-xs" aria-hidden="true" />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ))
+        )}
       </div>
 
       {open && (
@@ -294,6 +335,22 @@ export default function Gallery() {
         </div>
       )}
     </>
+  );
+}
+
+function TabButton({ label, count, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
+        active
+          ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
+          : 'border-neutral-900/15 bg-white text-neutral-600 dark:border-white/15 dark:bg-neutral-900 dark:text-neutral-300'
+      }`}
+    >
+      {label}
+      <span className={active ? 'opacity-70' : 'text-neutral-400'}>{count}</span>
+    </button>
   );
 }
 
