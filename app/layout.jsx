@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: 'SANTVS · Les Santes 2026',
+  title: 'Les Santxs 2026',
   description: 'Fes-te fotos amb els actes de Les Santes de Mataró 2026',
 };
 

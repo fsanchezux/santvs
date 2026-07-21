@@ -54,7 +54,7 @@ const STEPS = [
   },
 ];
 
-const DONE_KEY = 'santvs_tour_done';
+const SEEN_KEY = 'santvs_welcome_seen';
 
 export default function TourController() {
   const router = useRouter();
@@ -69,16 +69,22 @@ export default function TourController() {
     [router]
   );
 
+  // End of the tour → show the welcome modal as the final facet.
   const finish = useCallback(() => {
     setStep(-1);
-    try {
-      window.localStorage.setItem(DONE_KEY, '1');
-    } catch {}
+    setShowStrava(false);
+    setTimeout(() => window.dispatchEvent(new Event('santvs:open-welcome')), 60);
   }, []);
 
   useEffect(() => {
     const onStart = () => go(0);
     window.addEventListener('santvs:start-tour', onStart);
+    // Auto-start the tour on the very first visit.
+    let seen = true;
+    try {
+      seen = !!window.localStorage.getItem(SEEN_KEY);
+    } catch {}
+    if (!seen) go(0);
     return () => window.removeEventListener('santvs:start-tour', onStart);
   }, [go]);
 

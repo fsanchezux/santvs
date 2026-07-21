@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Wordmark from './Wordmark';
 import { getShareUrl, copyShareUrl, shareApp } from '@/lib/share';
 
@@ -8,7 +9,10 @@ const SEEN_KEY = 'santvs_welcome_seen';
 
 const SOCIAL_URL = 'https://www.instagram.com/fsanchez.co'; // "podeu seguir-me a les xarxes socials"
 
+// Shown as the FINAL facet of the guided tour (opened via the
+// `santvs:open-welcome` event fired by TourController when the tour ends).
 export default function WelcomeModal() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState('');
   const [copied, setCopied] = useState(false);
@@ -17,11 +21,6 @@ export default function WelcomeModal() {
   useEffect(() => {
     setUrl(getShareUrl());
     setCanShare(typeof navigator !== 'undefined' && typeof navigator.share === 'function');
-    try {
-      if (!window.localStorage.getItem(SEEN_KEY)) setOpen(true);
-    } catch {
-      setOpen(true);
-    }
     const reopen = () => setOpen(true);
     window.addEventListener('santvs:open-welcome', reopen);
     return () => window.removeEventListener('santvs:open-welcome', reopen);
@@ -33,14 +32,11 @@ export default function WelcomeModal() {
     } catch {}
   };
 
-  // Close the modal. When `startTour` is true, kick off the guided tour.
-  const close = startTour => {
+  // Close the modal. When `goToMap` is true, land the user on the map.
+  const close = goToMap => {
     setOpen(false);
     markSeen();
-    if (startTour) {
-      // Let the modal unmount before the tour navigates.
-      setTimeout(() => window.dispatchEvent(new Event('santvs:start-tour')), 60);
-    }
+    if (goToMap) router.push('/');
   };
 
   const onCopy = async () => {
@@ -70,7 +66,7 @@ export default function WelcomeModal() {
           {/* Welcome block */}
           <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Benvingut/da</h2>
           <p className="mt-1 text-sm text-neutral-500">
-            Fem un tour ràpid per l’aplicació en acabar.
+            Ja coneixes l’aplicació. Una mica sobre el projecte:
           </p>
 
           {/* Separated block — the project statement */}
@@ -131,7 +127,7 @@ export default function WelcomeModal() {
             onClick={() => close(true)}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-[#fc4c02] px-6 py-3 text-sm font-semibold text-white"
           >
-            Comença el tour
+            Començar a utilitzar
             <i className="fa-solid fa-arrow-right" aria-hidden="true" />
           </button>
         </div>
