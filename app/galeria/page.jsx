@@ -3,7 +3,11 @@ import BottomNav from '@/components/BottomNav';
 import Wordmark from '@/components/Wordmark';
 import ShareButton from '@/components/ShareButton';
 
-export const metadata = { title: 'Galeria · SANTVS' };
+export const metadata = {
+  title: 'Galeria',
+  description: 'Galeria de fotos compartida de Les Santes de Mataró 2026.',
+  alternates: { canonical: '/galeria' },
+};
 
 export default function GaleriaPage() {
   return (

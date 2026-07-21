@@ -3,6 +3,7 @@ import { Archivo_Black, Inter } from 'next/font/google';
 import ThemeController from '@/components/ThemeController';
 import WelcomeModal from '@/components/WelcomeModal';
 import TourController from '@/components/TourController';
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site';
 
 const archivo = Archivo_Black({
   subsets: ['latin'],
@@ -18,8 +19,48 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: 'Les Santxs 2026',
-  description: 'Fes-te fotos amb els actes de Les Santes de Mataró 2026',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    'Les Santes',
+    'Les Santes 2026',
+    'Les Santes Mataró',
+    'Festa Major Mataró',
+    'programa Les Santes',
+    'actes Les Santes',
+    'Mataró',
+  ],
+  authors: [{ name: 'Ferran Sánchez', url: 'https://www.instagram.com/fsanchez.co' }],
+  creator: 'Ferran Sánchez',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    locale: 'ca_ES',
+    url: '/',
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: SITE_NAME,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+  },
 };
 
 export const viewport = {

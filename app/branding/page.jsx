@@ -3,7 +3,11 @@ import BrandingVideo from '@/components/BrandingVideo';
 import Wordmark from '@/components/Wordmark';
 import ShareButton from '@/components/ShareButton';
 
-export const metadata = { title: 'Branding · SANTVS' };
+export const metadata = {
+  title: 'Branding',
+  description: 'El branding de Les Santes 2026 inspirat en el llenguatge visual de Strava.',
+  alternates: { canonical: '/branding' },
+};
 
 export default function BrandingPage() {
   return (
