@@ -7,6 +7,7 @@ const items = [
   { href: '/llista', label: 'Llista', icon: 'fa-solid fa-list-ul' },
   { href: '/', label: 'Mapa', icon: 'fa-solid fa-map-location-dot' },
   { href: '/galeria', label: 'Galeria', icon: 'fa-regular fa-images' },
+  { href: '/branding', label: 'Branding', icon: 'fa-solid fa-palette' },
 ];
 
 export default function BottomNav() {
@@ -21,6 +22,7 @@ export default function BottomNav() {
         <NavItem item={items[1]} active={pathname === '/'} />
         <ShutterLink />
         <NavItem item={items[2]} active={pathname?.startsWith('/galeria')} />
+        <NavItem item={items[3]} active={pathname?.startsWith('/branding')} />
       </div>
     </nav>
   );

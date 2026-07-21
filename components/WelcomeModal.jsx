@@ -6,8 +6,7 @@ import { getShareUrl, copyShareUrl, shareApp } from '@/lib/share';
 
 const SEEN_KEY = 'santvs_welcome_seen';
 
-// TODO: replace with the real destinations.
-const BRANDING_URL = '#'; // "Per veure el branding, podeu anar aquí"
+const BRANDING_URL = '/branding'; // "Per veure el branding, podeu anar aquí"
 const SOCIAL_URL = 'https://www.instagram.com/fsanchez.co'; // "podeu seguir-me a les xarxes socials"
 
 export default function WelcomeModal() {
