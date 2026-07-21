@@ -148,10 +148,10 @@ export default function WelcomeModal() {
             <button
               onClick={onInstagram}
               disabled={igBusy}
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#f58529] via-[#dd2a7b] to-[#8134af] px-4 py-2.5 text-xs font-semibold text-white disabled:opacity-60"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-neutral-900 px-4 py-2.5 text-xs font-semibold text-white disabled:opacity-60 dark:bg-white dark:text-neutral-950"
             >
-              <i className={`fa-brands ${igBusy ? 'fa-spinner fa-spin' : 'fa-instagram'} text-sm`} aria-hidden="true" />
-              Compartir a Instagram Stories
+              <i className={`fa-solid ${igBusy ? 'fa-spinner fa-spin' : 'fa-share-nodes'} text-sm`} aria-hidden="true" />
+              Compartir
             </button>
             {igError && (
               <p className="mt-1.5 text-center text-[11px] text-red-500">
