@@ -11,6 +11,7 @@ const STEPS = [
     route: '/branding',
     icon: 'fa-film',
     title: 'El branding',
+    summary: 'La identitat visual del projecte, inspirada en Strava.',
     text: 'He desenvolupat una identitat visual per a la Festa Major de Les Santes inspirada en el llenguatge visual de Strava.',
     strava: true,
   },
@@ -18,6 +19,7 @@ const STEPS = [
     route: '/',
     icon: 'fa-map-location-dot',
     title: 'El mapa',
+    summary: 'La pantalla principal, amb tots els actes sobre el mapa.',
     text: [
       'Després de desenvolupar com seria aquesta identitat visual, vaig estirar la idea una mica més enllà, transformant no només l’aspecte visual, sinó també la part utilitària. És així com apareix el mapa.',
       'Aquest està basat en la pantalla principal de Strava, on es troben les rutes recomanades del teu entorn. En aquest cas, les rutes passen a ser els actes de la Festa Major i la pantalla principal es transforma en un programa de Les Santes.',
@@ -27,12 +29,14 @@ const STEPS = [
     route: '/llista',
     icon: 'fa-list-ul',
     title: 'La llista d’actes',
+    summary: 'Tots els actes en format llista, filtrables per dia.',
     text: 'Complementa l’apartat de mapa i dóna una versió adaptada dels actes.',
   },
   {
     route: '/galeria',
     icon: 'fa-images',
     title: 'La galeria',
+    summary: 'Comparteix les teves fotos dels actes de la festa.',
     text: 'I per acabar, el que fa que l’aplicació en la que ens estem inspirant tingui tant d’èxit és la seva faceta de xarxa social. En aquest cas, l’adaptació i la sinergia entre les dues idees no ha sigut tan directa.',
     steps: [
       {
@@ -60,10 +64,12 @@ export default function TourController() {
   const router = useRouter();
   const [step, setStep] = useState(-1); // -1 = inactive
   const [showStrava, setShowStrava] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const go = useCallback(
     i => {
       setStep(i);
+      setExpanded(false);
       router.push(STEPS[i].route);
     },
     [router]
@@ -108,40 +114,59 @@ export default function TourController() {
           </div>
         </div>
 
-        {Array.isArray(s.text) ? (
-          <div className="mt-3 space-y-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
-            {s.text.map((t, i) => (
-              <p key={i}>{t}</p>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">{s.text}</p>
-        )}
+        {/* Concise summary — always visible */}
+        <p className="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">{s.summary}</p>
 
-        {s.strava && (
+        {/* Optional "know more" toggle → reveals the fuller description */}
+        {(s.text || s.steps) && (
           <button
-            onClick={() => setShowStrava(true)}
-            className="mt-1.5 inline-flex items-center gap-1 text-xs font-medium text-[#fc4c02] hover:underline"
+            onClick={() => setExpanded(e => !e)}
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#fc4c02]"
+            aria-expanded={expanded}
           >
-            <i className="fa-solid fa-circle-question" aria-hidden="true" />
-            Què és Strava?
+            {expanded ? 'Mostrar-ne menys' : 'Saber-ne més'}
+            <i className={`fa-solid fa-chevron-${expanded ? 'up' : 'down'} text-[10px]`} aria-hidden="true" />
           </button>
         )}
 
-        {s.steps && (
-          <ul className="mt-4 flex flex-col gap-3 border-t border-neutral-900/5 pt-4 dark:border-white/10">
-            {s.steps.map(st => (
-              <li key={st.title} className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fc4c02]/10 text-[#fc4c02]">
-                  <i className={`${st.icon} text-sm`} aria-hidden="true" />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-neutral-900 dark:text-white">{st.title}</p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{st.text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+        {expanded && (
+          <div className="mt-3 border-t border-neutral-900/5 pt-3 dark:border-white/10">
+            {Array.isArray(s.text) ? (
+              <div className="space-y-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
+                {s.text.map((t, i) => (
+                  <p key={i}>{t}</p>
+                ))}
+              </div>
+            ) : (
+              s.text && <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">{s.text}</p>
+            )}
+
+            {s.strava && (
+              <button
+                onClick={() => setShowStrava(true)}
+                className="mt-1.5 inline-flex items-center gap-1 text-xs font-medium text-[#fc4c02] hover:underline"
+              >
+                <i className="fa-solid fa-circle-question" aria-hidden="true" />
+                Què és Strava?
+              </button>
+            )}
+
+            {s.steps && (
+              <ul className="mt-4 flex flex-col gap-3">
+                {s.steps.map(st => (
+                  <li key={st.title} className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fc4c02]/10 text-[#fc4c02]">
+                      <i className={`${st.icon} text-sm`} aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-neutral-900 dark:text-white">{st.title}</p>
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400">{st.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         )}
 
         <div className="mt-4 flex items-center justify-center gap-1.5">
