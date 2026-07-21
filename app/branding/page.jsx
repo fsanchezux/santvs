@@ -13,6 +13,16 @@ export default function BrandingPage() {
           <Wordmark size="md" className="[filter:invert(1)]" />
           <div className="flex items-center gap-1">
             <span className="text-[10px] uppercase tracking-widest text-neutral-400">Branding</span>
+            <a
+              href="https://www.instagram.com/fsanchez.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram · @fsanchez.co"
+              title="Instagram"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-300 hover:bg-white/10 hover:text-white"
+            >
+              <i className="fa-brands fa-instagram text-lg" aria-hidden="true" />
+            </a>
             <ShareButton className="text-neutral-300 hover:bg-white/10 hover:text-white" />
           </div>
         </header>
