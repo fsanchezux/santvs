@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Wordmark from './Wordmark';
 import { getShareUrl, copyShareUrl, shareStoryImage } from '@/lib/share';
+import { SHARE_IMAGES } from '@/lib/shareImages';
 
 const SEEN_KEY = 'santvs_welcome_seen';
 
@@ -20,6 +21,7 @@ export default function WelcomeModal() {
   const [copied, setCopied] = useState(false);
   const [igBusy, setIgBusy] = useState(false);
   const [igError, setIgError] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(SHARE_IMAGES[0]?.src || '/og.jpg');
 
   useEffect(() => {
     setUrl(getShareUrl());
@@ -63,7 +65,7 @@ export default function WelcomeModal() {
     if (igBusy) return;
     setIgBusy(true);
     setIgError(false);
-    const result = await shareStoryImage();
+    const result = await shareStoryImage(selectedImage);
     if (result === 'failed') setIgError(true);
     setIgBusy(false);
   };
@@ -115,6 +117,34 @@ export default function WelcomeModal() {
                 {copied ? 'Copiat!' : 'Copiar'}
               </button>
             </div>
+            {SHARE_IMAGES.length > 1 && (
+              <div className="mt-3">
+                <p className="mb-1.5 text-[11px] text-neutral-500">Tria la imatge a compartir</p>
+                <div className="no-scrollbar flex gap-2 overflow-x-auto">
+                  {SHARE_IMAGES.map(img => {
+                    const active = selectedImage === img.src;
+                    return (
+                      <button
+                        key={img.src}
+                        onClick={() => setSelectedImage(img.src)}
+                        aria-label={img.label}
+                        aria-pressed={active}
+                        className={`relative shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                          active ? 'border-[#fc4c02]' : 'border-transparent opacity-70'
+                        }`}
+                      >
+                        <img src={img.src} alt={img.label} className="h-20 w-14 object-cover" />
+                        {active && (
+                          <span className="absolute bottom-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#fc4c02] text-[9px] text-white">
+                            <i className="fa-solid fa-check" aria-hidden="true" />
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <button
               onClick={onInstagram}
               disabled={igBusy}
