@@ -100,7 +100,7 @@ export default function WelcomeModal() {
             .
           </p>
           <p className="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
-            Recordeu: el boca-orella és una eina molt poderosa, compartir-ho es la millor formar
+            Recordeu: el boca-orella és una eina molt poderosa, compartir-ho és la millor formar
             d’ajudar.
           </p>
 
