@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Guided walkthrough that navigates through the app: starts on the branding
@@ -37,7 +37,7 @@ const STEPS = [
     icon: 'fa-images',
     title: 'La galeria',
     summary: 'Comparteix les teves fotos dels actes de la festa.',
-    text: 'I per acabar, el que fa que l’aplicació en la que ens estem inspirant tingui tant d’èxit és la seva faceta de xarxa social. En aquest cas, l’adaptació i la sinergia entre les dues idees no ha sigut tan directa.',
+    text: 'I, per acabar, el que fa que l’aplicació en què ens estem inspirant tingui tant d’èxit és la seva faceta de xarxa social. En aquest cas, l’adaptació i la sinergia entre les dues idees no han estat tan directes i, per tant, hem hagut d’anexionar idees de diferents aplicacions per fer-ho funcionar.',
     steps: [
       {
         icon: 'fa-solid fa-camera-retro',
@@ -64,16 +64,27 @@ export default function TourController() {
   const router = useRouter();
   const [step, setStep] = useState(-1); // -1 = inactive
   const [showStrava, setShowStrava] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
+  // Detail is expanded by default on every stop, until the user collapses one
+  // ("Mostrar-ne menys"); from then on stops open collapsed.
+  const preferOpenRef = useRef(true);
 
   const go = useCallback(
     i => {
       setStep(i);
-      setExpanded(false);
+      setExpanded(preferOpenRef.current);
       router.push(STEPS[i].route);
     },
     [router]
   );
+
+  const toggleDetail = useCallback(() => {
+    setExpanded(prev => {
+      const next = !prev;
+      if (!next) preferOpenRef.current = false; // collapsing sticks
+      return next;
+    });
+  }, []);
 
   // End of the tour → show the welcome modal as the final facet.
   const finish = useCallback(() => {
@@ -120,7 +131,7 @@ export default function TourController() {
         {/* Optional "know more" toggle → reveals the fuller description */}
         {(s.text || s.steps) && (
           <button
-            onClick={() => setExpanded(e => !e)}
+            onClick={toggleDetail}
             className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#fc4c02]"
             aria-expanded={expanded}
           >
