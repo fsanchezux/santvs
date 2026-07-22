@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Wordmark from './Wordmark';
 import ShareButton from './ShareButton';
@@ -32,6 +32,7 @@ export default function MapHome() {
   const [query, setQuery] = useState('');
   const [day, setDay] = useState(null);
   const [focusVenueId, setFocusVenueId] = useState(null);
+  const dayScrollerRef = useRef(null);
 
   // On load: default the day filter to today (if within the festival). When
   // arriving from the acts list (/?venue=<id>) keep all days so the pin shows.
@@ -44,6 +45,20 @@ export default function MapHome() {
     const today = todayKey();
     if (DAYS.some(d => d.iso === today)) setDay(today);
   }, []);
+
+  // Keep the selected day chip centered (the row scrolls horizontally).
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const scroller = dayScrollerRef.current;
+      const el = scroller?.querySelector('[data-day-active="true"]');
+      if (!scroller || !el) return;
+      const sr = scroller.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      const delta = er.left - sr.left - (scroller.clientWidth - er.width) / 2;
+      scroller.scrollBy({ left: delta, behavior: 'smooth' });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [day]);
 
   const enriched = useMemo(
     () =>
@@ -59,13 +74,16 @@ export default function MapHome() {
     const q = query.trim().toLowerCase();
     return enriched.filter(e => {
       if (!e.venue) return false;
-      if (day && e.day !== day) return false;
-      if (!q) return true;
-      return (
-        e.title.toLowerCase().includes(q) ||
-        (e.venue?.name || '').toLowerCase().includes(q) ||
-        CATEGORIES[e.category].label.toLowerCase().includes(q)
-      );
+      if (q) {
+        // While searching, match across ALL days (ignore the day filter).
+        return (
+          e.title.toLowerCase().includes(q) ||
+          (e.venue?.name || '').toLowerCase().includes(q) ||
+          CATEGORIES[e.category].label.toLowerCase().includes(q)
+        );
+      }
+      // No search → apply the selected-day filter.
+      return !day || e.day === day;
     });
   }, [enriched, query, day]);
 
@@ -97,7 +115,7 @@ export default function MapHome() {
           <ShareButton className="-mr-1 shrink-0" />
         </div>
 
-        <div className="pointer-events-auto mx-auto w-full max-w-2xl overflow-x-auto no-scrollbar">
+        <div ref={dayScrollerRef} className="pointer-events-auto mx-auto w-full max-w-2xl overflow-x-auto no-scrollbar">
           <div className="flex gap-2 py-1">
             <DayChip label="Tots" active={day === null} onClick={() => setDay(null)} />
             {DAYS.map(d => (
@@ -120,6 +138,7 @@ function DayChip({ label, active, onClick }) {
   return (
     <button
       onClick={onClick}
+      data-day-active={active}
       className={`shrink-0 rounded-full border px-3 py-1 text-xs backdrop-blur ${
         active
           ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
