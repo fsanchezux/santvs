@@ -1,61 +1,27 @@
-# Les Santes 2026 · Mapa
+<img width="1920" height="1450" alt="behance project" src="https://github.com/user-attachments/assets/4824de27-2ad9-4b1c-84dd-b0249f09c23c" />
 
-Clon mínim del descobridor de rutes d'Strava, adaptat per a la Festa Major de Mataró.
+# Les Santvs
+Siempre que puedo, aprovecho las fiestas de mi ciudad como excusa para montar un side project: exprimo mi creatividad, lanzo conceptos, los junto y casi siempre acaban convertidos en un branding.
 
-- **Rutes** dels usuaris en tres modalitats: `hardcore`, `chill`, `infantil` (filtres tipus chip).
-- **Cerca d'actes** del programa oficial: et marca el recinte al mapa i et dóna enllaç a Google Maps.
+En esta ocasión, en la fiesta mayor de 2026 y en plena fiebre de Strava, decidí juntar el programa de la fiesta con una aplicación que clonara visualmente la estética de Strava.
+
+## Features
+
+- **Programa de fiestas** en formato listado.
+- **Mapa interactivo** con cada evento ubicado en su lugar.
+- **Branding**: imágenes con piezas exclusivas que mezclan los conceptos de la fiesta mayor con los de Strava.
+- **Galería de imágenes**: la gente puede subir su foto y se genera un texto que simula el recorrido de Strava, en función del acto que esté ocurriendo en ese momento.
 
 ## Stack
 
 - Next.js 14 (App Router, JS)
 - Tailwind CSS
-- React-Leaflet + tiles d'OpenStreetMap (gratuït, sense API key)
-- Desplegament a Vercel
+- React-Leaflet + tiles de OpenStreetMap (gratuito, sin API key)
+- Despliegue en Vercel
 
-## Posada en marxa
+## Licencia
 
-```bash
-npm install
-npm run dev
-```
+Este proyecto está bajo la licencia [MIT](LICENSE).
 
-Obre <http://localhost:3000>.
+<img width="1923" height="1085" alt="credits" src="https://github.com/user-attachments/assets/f4933ca8-bfac-4919-bb07-9f1ce499e541" />
 
-## Estructura
-
-```
-app/                rutas y layout de Next
-components/         UI (mapa, buscador, filtros, llista)
-data/
-  venues.js         coordenades dels recintes
-  events.js         programa de Les Santes 2026
-  routes.js         rutes d'exemple (mock)
-```
-
-## Ajustar dades
-
-- **Coordenades dels recintes**: edita `data/venues.js`. Els valors actuals són aproximats al voltant del centre de Mataró; afina lat/lng quan vulguis (Google Maps → clic dret → copiar coordenades).
-- **Actes**: edita `data/events.js`. Cada acte fa referència a un `venueId` de `venues.js`.
-- **Rutes**: edita `data/routes.js`. La propietat `path` és una llista de `[lat, lng]`. Per importar GPX real, transforma els punts a aquest format.
-
-## Desplegament a Vercel
-
-1. Puja el repo a GitHub.
-2. A [vercel.com/new](https://vercel.com/new) importa el repo.
-3. Framework: *Next.js* (auto-detectat). Sense variables d'entorn.
-4. Deploy.
-
-També pots usar la CLI:
-
-```bash
-npm i -g vercel
-vercel
-```
-
-## Roadmap proper (idees)
-
-- Pujada de GPX per part dels usuaris (form + parseig a `path`).
-- Backend amb Supabase / Vercel KV per persistir rutes.
-- Compartir ruta amb URL (`?route=id`).
-- Capa de "favorits" amb localStorage.
-- PWA per instal·lar al mòbil.
